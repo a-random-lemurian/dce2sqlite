@@ -1,9 +1,10 @@
 import ijson
 import sqlite3
+import argparse
 
 
-def main():
-    db = sqlite3.connect("discordexport.db")
+def main(infile, outfile):
+    db = sqlite3.connect(outfile)
     cur = db.cursor()
     cur.execute("DROP TABLE IF EXISTS messages")
     cur.execute(
@@ -30,7 +31,7 @@ def main():
         );
         """)
 
-    f = open("Archived.json", "r")
+    f = open(infile, "r")
     objects = ijson.items(f, "messages.item")
     obj = iter(objects)
 
@@ -87,4 +88,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Convert DCE .json output files into SQLite databases.')
+    parser.add_argument("input", help="Path to input file.")
+    parser.add_argument("-o", "--output", help="Path to output file", default="ExportedDiscordMessages.db")
+    args = parser.parse_args()
+    main(args.input, args.output)
