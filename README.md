@@ -13,3 +13,9 @@ Be a better data scientist with `dce2sqlite`. If analyzing Discord servers is ho
 | Linux (Ubuntu) | Yes       |
 | Windows        | Untested  |
 | macOS          | Yes       |
+
+## Miscellaneous
+
+| | | |
+|---|---|---|
+| [SQLite Git mirror](https://github.com/sqlite/sqlite) | [Discord Chat Exporter](https://github.com/Tyrrrz/DiscordChatExporter)
