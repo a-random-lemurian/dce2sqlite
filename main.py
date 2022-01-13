@@ -1,36 +1,39 @@
 import ijson
 import sqlite3
 import argparse
+import json
 
 
-def main(infile, outfile):
+def main(args, infile, outfile):
     db = sqlite3.connect(outfile)
     cur = db.cursor()
-    cur.execute("DROP TABLE IF EXISTS messages")
-    cur.execute(
-        """
-            CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER,
-            type TEXT,
-            timestamp TEXT,
-            timestampEdited TEXT,
-            callEndedTimestamp TEXT,
-            isPinned INTEGER,
-            content TEXT,
 
-            authorid INTEGER,
-            authorname TEXT,
-            authordiscrim INTEGER,
-            authornick TEXT,
-            authorisbot INTEGER,
-            authoravatarurl TEXT,
-            authornamecolor TEXT,
+    if not args.append:
+        cur.execute("DROP TABLE IF EXISTS messages")
+        cur.execute(
+            """
+                CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER,
+                type TEXT,
+                timestamp TEXT,
+                timestampEdited TEXT,
+                callEndedTimestamp TEXT,
+                isPinned INTEGER,
+                content TEXT,
 
-            rawJSON TEXT,
-            numID INTEGER PRIMARY KEY AUTOINCREMENT
-        );
-        """
-    )
+                authorid INTEGER,
+                authorname TEXT,
+                authordiscrim INTEGER,
+                authornick TEXT,
+                authorisbot INTEGER,
+                authoravatarurl TEXT,
+                authornamecolor TEXT,
+
+                rawJSON TEXT,
+                numID INTEGER PRIMARY KEY AUTOINCREMENT
+            );
+            """
+        )
 
     f = open(infile, "r")
     objects = ijson.items(f, "messages.item")
@@ -81,7 +84,7 @@ def main(infile, outfile):
                 author.get("isBot"),
                 author.get("avatarUrl"),
                 author.get("color"),
-                str(itm),
+                json.dumps(itm),
             ),
         )
     print(f"Processed {i} messages.")
@@ -99,5 +102,12 @@ if __name__ == "__main__":
         help="Path to output file",
         default="ExportedDiscordMessages.db",
     )
+    parser.add_argument(
+        "-a",
+        "--append",
+        help="Append to already existing SQLite database (specified with -o)",
+        action="store_true"
+    )
+
     args = parser.parse_args()
-    main(args.input, args.output)
+    main(args, args.input, args.output)
