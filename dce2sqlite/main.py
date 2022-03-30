@@ -107,7 +107,7 @@ def main(args, infile, outfile):
     db.commit()
 
 
-if __name__ == "__main__":
+def entry():
     parser = argparse.ArgumentParser(
         description="Convert DCE .json output files into SQLite databases."
     )
@@ -133,3 +133,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args, args.input, args.output)
+
+if __name__ == '__entry__':
+    entry()
