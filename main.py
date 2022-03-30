@@ -3,6 +3,17 @@ import sqlite3
 import argparse
 import json
 
+def create_indexes(db, cur):
+    cur.execute(
+        """
+            CREATE INDEX idx_messages ON messages (
+                authorname ASC,
+                authordiscrim ASC,
+                authornick ASC,
+                content ASC
+            );
+        """
+    )
 
 def main(args, infile, outfile):
     db = sqlite3.connect(outfile)
@@ -88,6 +99,11 @@ def main(args, infile, outfile):
             ),
         )
     print(f"Processed {i} messages.")
+
+    if args.index:
+        print("Creating index")
+        create_indexes(db, cur)
+
     db.commit()
 
 
@@ -106,6 +122,12 @@ if __name__ == "__main__":
         "-a",
         "--append",
         help="Append to already existing SQLite database (specified with -o)",
+        action="store_true"
+    )
+    parser.add_argument(
+        "-i",
+        "--index",
+        help="Create an index on the resulting database",
         action="store_true"
     )
 
