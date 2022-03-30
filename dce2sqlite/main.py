@@ -112,6 +112,7 @@ def entry():
         description="Convert DCE .json output files into SQLite databases."
     )
     parser.add_argument("input", help="Path to input file.")
+    parser.add_argument("-f", "--infile", help="Path to input file")
     parser.add_argument(
         "-o",
         "--output",
